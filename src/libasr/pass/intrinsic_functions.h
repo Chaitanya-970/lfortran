@@ -4482,9 +4482,11 @@ namespace Merge {
             if (!type_decl) {
                 type_decl = ASRUtils::get_struct_sym_from_struct_expr(new_args[1].m_value);
             }
+            LCOMPILERS_ASSERT_MSG(type_decl != nullptr,
+                "Failed to resolve type declaration for StructType argument in instantiate_Merge");
         }
 
-        std::string type_name = (is_struct_type_arg && type_decl)
+        std::string type_name = is_struct_type_arg
             ? ASRUtils::symbol_name(type_decl)
             : get_type_code(ASRUtils::extract_type(arg_types[0]));
         std::string new_name = "_lcompilers_merge_" + type_name
@@ -4517,7 +4519,7 @@ namespace Merge {
         ASR::expr_t *tsource_arg = nullptr;
         ASR::expr_t *fsource_arg = nullptr;
         ASR::expr_t *result = nullptr;
-        if (is_struct_type_arg && type_decl) {
+        if (is_struct_type_arg) {
             tsource_arg = b.Variable(fn_symtab, "tsource", tsource_type, ASR::intentType::In, type_decl);
             fsource_arg = b.Variable(fn_symtab, "fsource", fsource_type, ASR::intentType::In, type_decl);
             result = b.Variable(fn_symtab, "merge", return_type, ASR::intentType::ReturnVar, type_decl);
